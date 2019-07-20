@@ -19,9 +19,13 @@ public class Main {
     private Main() throws IOException {
         outPutFile = new String[5];
 
-        double[] utDateNow = getDateTime(19, 7, 2019,
+        double[] utDateNow = getDateTime(20, 7, 2019,
                 21, 0, 0, 0);
-        System.out.println("utDateNow = " + Arrays.toString(utDateNow));
+        double[] utDateNow1 = getDateTime(20, 7, 2019,
+                23, 30, 0, 0);
+        System.out.println("utDateNow0 = " + Arrays.toString(utDateNow));
+        System.out.println("utDateNow1 = " + Arrays.toString(utDateNow1));
+        //trajectoire(utDateNow0,utDateNow1);
 
         lstNow = SkyAlgorithms.CalcLST((int) utDateNow[0], (int) utDateNow[1], (int) utDateNow[2], utDateNow[3], lon, leapSec);
         System.out.println("LST now (°) : " + lstNow);
@@ -33,7 +37,11 @@ public class Main {
 
         String[] nextLine;
         reader.readNext();//pass first line
-        outPutFile[0]="name";outPutFile[1]="ra";outPutFile[2]="dec";outPutFile[3]="alt";outPutFile[4]="az";
+        outPutFile[0] = "name";
+        outPutFile[1] = "ra";
+        outPutFile[2] = "dec";
+        outPutFile[3] = "alt";
+        outPutFile[4] = "az";
         writer.writeNext(outPutFile);
         while ((nextLine = reader.readNext()) != null) {
             convertToAzH(nextLine);
