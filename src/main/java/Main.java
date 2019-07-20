@@ -33,6 +33,8 @@ public class Main {
 
         String[] nextLine;
         reader.readNext();//pass first line
+        outPutFile[0]="name";outPutFile[1]="ra";outPutFile[2]="dec";outPutFile[3]="alt";outPutFile[4]="az";
+        writer.writeNext(outPutFile);
         while ((nextLine = reader.readNext()) != null) {
             convertToAzH(nextLine);
             writer.writeNext(outPutFile);
