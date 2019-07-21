@@ -1,3 +1,5 @@
+package main;
+
 import Coordinate_Converter.astroj.SkyAlgorithms;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;

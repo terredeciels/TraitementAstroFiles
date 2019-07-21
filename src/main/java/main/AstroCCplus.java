@@ -1,3 +1,5 @@
+package main;
+
 import Coordinate_Converter.astroj.SkyAlgorithms;
 
 import java.util.Arrays;
@@ -21,7 +23,7 @@ public class AstroCCplus {
         System.out.println("LST now (°) : " + lstNow);
         String lstNowSex = decToSex(lstNow, 0, 24, false);
         System.out.println("LST now (hms) : " + lstNowSex);
-//         lstNow = SkyAlgorithms.LSTNow(lon,leapSec);
+//         lstNow = SkyAlgorithms.LSTNow(longitude,leapSec);
 //        System.out.println(lstNow);
 //         lstNowSex = decToSex(lstNow, 0, 24, false);
 //        System.out.println(lstNowSex);
@@ -38,7 +40,7 @@ public class AstroCCplus {
         alt = 50.0;
         az = 10.0;
         calcul(lstNow, lat, alt, az);
-//        final double[] hadec = SkyAlgorithms.HorizontalToEquatorial(alt, az, lat);
+//        final double[] hadec = SkyAlgorithms.HorizontalToEquatorial(alt, az, latitude);
 //        System.out.println("ha = " + hadec[0] + "dec = " + hadec[1]);
 //        double Ra = (lstNow - hadec[0]);
 //        if (Ra < 0) Ra += 24;
