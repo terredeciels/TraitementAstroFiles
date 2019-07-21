@@ -22,6 +22,46 @@ class ETraitementAF {
     final int milliseconds1 = 0;
     double leapSec = 0;// ?
 
+    public static double sexToDec(String text) {
+        double X = Double.NaN;
+        boolean XNegative = false;
+        String[] pieces = text.replace("-", " -").replaceAll("[^0-9\\.\\-]{1,}", " ").trim().split("[^0-9\\.\\-]{1,}");
+        if (pieces.length > 0) {
+            X = parseDouble(pieces[0]);
+            if (!Double.isNaN(X) && pieces[0].contains("-")) {
+                X = -X;
+                XNegative = true;
+            }
+            if (pieces.length > 1) {
+                X += Math.abs(parseDouble(pieces[1])) / 60.0;
+            }
+            if (pieces.length > 2) {
+                X += Math.abs(parseDouble(pieces[2])) / 3600.0;
+            }
+        }
+
+        if (XNegative) {
+            X = -X;
+        }
+        return X;
+    }
+
+    private static double parseDouble(String s) {
+        return parseDouble(s, Double.NaN);
+
+    }
+
+    private static double parseDouble(String s, double defaultValue) {
+        if (s == null) {
+            return defaultValue;
+        }
+        try {
+            defaultValue = Double.parseDouble(s);
+        } catch (NumberFormatException ignored) {
+        }
+        return defaultValue;
+    }
+
     double[] getDateTime(double DAY_OF_MONTH, double MONTH, double YEAR,
                          int hours, int minutes, int seconds, int milliseconds) {
         // UTC
@@ -39,4 +79,6 @@ class ETraitementAF {
         utdate[3] = ut;
         return utdate;
     }
+
+
 }

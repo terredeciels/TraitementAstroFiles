@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class TraitementAstroFiles extends ETraitementAF {
 
+    private final Filtre filtre;
     private double lstNow;
     private String[] outPutFile;
 
@@ -21,8 +22,10 @@ public class TraitementAstroFiles extends ETraitementAF {
         double[] utDateNow1 = getDateTime(day_of_month1, month1, year1,
                 hours1, minutes1, seconds1, milliseconds1);
 
+        filtre = new Filtre(20, 70, -30, 30);
         traitement(utDateNow0, 0);
         traitement(utDateNow1, 1);
+
 
     }
 
@@ -40,7 +43,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         outPutFile[0] = "name";
         outPutFile[1] = "ra";
         outPutFile[2] = "dec";
-        outPutFile[3]="Const";
+        outPutFile[3] = "Const";
         outPutFile[4] = "alt";
         outPutFile[5] = "az";
         writer.writeNext(outPutFile);
@@ -60,16 +63,17 @@ public class TraitementAstroFiles extends ETraitementAF {
         outPutFile[2] = decS;
         String constS = nextLine[3];
         outPutFile[3] = constS;
-        double ra = 0;
-        double dec = 0;
+        double ra, dec;
         try {
             ra = Double.parseDouble(raS);
             dec = Double.parseDouble(decS);
         } catch (NumberFormatException e) {
-           ra=0;dec=0;
+            /* @TODO */
+            ra = 0;
+            dec = 0;
         }
         double ha = lstNow - ra;
-        final double[] altaz = SkyAlgorithms.EquatorialToHorizontal(ha, dec, latitude);
+        double[] altaz = SkyAlgorithms.EquatorialToHorizontal(ha, dec, latitude);
         double altitude = altaz[0];
         outPutFile[4] = Double.toString(altitude);
         double azimuth = altaz[1];
