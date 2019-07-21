@@ -9,7 +9,7 @@ public class Test {
         res = 15 * res;
         System.out.println(res);
 
-        //res = CoordinateParseUtils.parseDMS("+37d 56m 33s");
-        // System.out.println(res);
+        res = ETraitementAF.sexToDec("-37d 56m 33s");
+        System.out.println(res);
     }
 }

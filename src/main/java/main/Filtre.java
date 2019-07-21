@@ -23,7 +23,7 @@ class Filtre {
 //    private void traitement(double[] utDateNow, int pass) throws IOException {
 //        lstNow = SkyAlgorithms.CalcLST((int) utDateNow[0], (int) utDateNow[1], (int) utDateNow[2], utDateNow[3], longitude, leapSec);
 //
-//        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierResult + pass + ".csv"), ',');
+//        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + pass + ".csv"), ',');
 //        CSVReader reader = new CSVReader(new FileReader(pathFichierEntree));
 //        String[] nextLine;
 //        reader.readNext();//pass first line

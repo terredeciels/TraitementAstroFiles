@@ -3,9 +3,9 @@ package main;
 class ETraitementAF {
     final double latitude = 49.0;
     final double longitude = 1.887;
-    final String nomFichierResult = "aavso_azalt_";
+    final String nomFichierEntree = "index";
+    final String nomFichierSortie = "aavso_azalt_";
     final String pathFichierResult = "D:\\Astronomie\\";
-    final String pathFichierEntree = "D:\\Astronomie\\aavso_target_index_format.csv";
     final double day_of_month0 = 22;
     final double day_of_month1 = 22;
     final double month0 = 7;
@@ -22,7 +22,7 @@ class ETraitementAF {
     final int milliseconds1 = 0;
     double leapSec = 0;// ?
 
-    public static double sexToDec(String text) {
+    static double sexToDec(String text) {
         double X = Double.NaN;
         boolean XNegative = false;
         String[] pieces = text.replace("-", " -").replaceAll("[^0-9\\.\\-]{1,}", " ").trim().split("[^0-9\\.\\-]{1,}");
