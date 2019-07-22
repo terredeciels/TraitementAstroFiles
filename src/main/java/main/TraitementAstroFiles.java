@@ -7,6 +7,10 @@ import com.opencsv.CSVWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TraitementAstroFiles extends ETraitementAF {
 
@@ -14,11 +18,12 @@ public class TraitementAstroFiles extends ETraitementAF {
     private double lstNow;
     private String[] outPutFile;
     private String[] temPoutPutFile;
-    private String lastName;
+    private ArrayList<String[]> LOutPutFile;
 
     private TraitementAstroFiles() throws IOException {
         outPutFile = new String[10];
         temPoutPutFile = new String[10];
+        LOutPutFile = new ArrayList<>();
 
         double[] utDateNow0 = getDateTime(day_of_month0, month0, year0,
                 hours0, minutes0, seconds0, milliseconds0);
@@ -58,14 +63,18 @@ public class TraitementAstroFiles extends ETraitementAF {
         while ((nextLine = reader.readNext()) != null) {
             boolean valid = convertToAzH(nextLine);
             if (valid)
-                writer.writeNext(outPutFile);
+                LOutPutFile.add(outPutFile);
+            writer.writeNext(outPutFile);
         }
         writer.close();
+        suppDoublons();
     }
 
     private boolean convertToAzH(String[] nextLine) {
         double ra, dec;
+
         temPoutPutFile[0] = nextLine[0];//name
+
         String raS = nextLine[1];
         ra = 15 * ETraitementAF.sexToDec(raS);
         temPoutPutFile[1] = Double.toString(ra);// ra
@@ -97,4 +106,14 @@ public class TraitementAstroFiles extends ETraitementAF {
         return valid;
     }
 
+    private void suppDoublons() throws IOException {
+        Set<String[]> set = new HashSet<>(LOutPutFile);
+        List<String[]> LOutPutFileSansDoublon = new ArrayList<>(set);
+        int pass = 0;
+        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + pass + "_sd" + ".csv"), ',');
+
+        for (String[] e : LOutPutFileSansDoublon) {
+            writer.writeNext(e);
+        }
+    }
 }
