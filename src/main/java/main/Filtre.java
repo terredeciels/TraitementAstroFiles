@@ -15,9 +15,10 @@ class Filtre {
     }
 
     boolean exe(double altitude, double azimuth) {
-        azimuth = azimuth - 360;
-        return !(altitude > altmax) && !(altitude < altmin)
-                && !(azimuth > azmax) && !(azimuth < azmin);
+        //new Filtre(20, 70, 330, 30);
+        boolean v = altitude < altmax && altitude > altmin;
+        v = v && (azimuth < azmax && azimuth >= 0 || azimuth > azmin && azimuth <= 360);
+        return v;
     }
 
 }

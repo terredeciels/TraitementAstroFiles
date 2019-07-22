@@ -14,6 +14,7 @@ public class TraitementAstroFiles extends ETraitementAF {
     private double lstNow;
     private String[] outPutFile;
     private String[] temPoutPutFile;
+    private String lastName;
 
     private TraitementAstroFiles() throws IOException {
         outPutFile = new String[10];
@@ -24,7 +25,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         double[] utDateNow1 = getDateTime(day_of_month1, month1, year1,
                 hours1, minutes1, seconds1, milliseconds1);
 
-        filtre = new Filtre(20, 70, -30, 30);
+        filtre = new Filtre(20, 70, 330, 30);
         traitement(utDateNow0, 0);
         //  traitement(utDateNow1, 1);
 
@@ -55,16 +56,16 @@ public class TraitementAstroFiles extends ETraitementAF {
 
         writer.writeNext(outPutFile);
         while ((nextLine = reader.readNext()) != null) {
-            convertToAzH(nextLine);
-            writer.writeNext(outPutFile);
+            boolean valid = convertToAzH(nextLine);
+            if (valid)
+                writer.writeNext(outPutFile);
         }
         writer.close();
     }
 
-    private void convertToAzH(String[] nextLine) {
+    private boolean convertToAzH(String[] nextLine) {
         double ra, dec;
         temPoutPutFile[0] = nextLine[0];//name
-
         String raS = nextLine[1];
         ra = 15 * ETraitementAF.sexToDec(raS);
         temPoutPutFile[1] = Double.toString(ra);// ra
@@ -78,16 +79,6 @@ public class TraitementAstroFiles extends ETraitementAF {
         temPoutPutFile[6] = nextLine[6];//MaxMag
         temPoutPutFile[7] = nextLine[7];//Period
 
-//        try {
-////            ra = Double.parseDouble(raS);
-////            dec = Double.parseDouble(decS);
-//            ra = 15 * ETraitementAF.sexToDec(raS);
-//            dec = ETraitementAF.sexToDec(decS);
-//        } catch (NumberFormatException e) {
-//            /* @TODO */
-//            ra = 0;
-//            dec = 0;
-//        }
         double ha = lstNow - ra;
         double[] altaz = SkyAlgorithms.EquatorialToHorizontal(ha, dec, latitude);
         double altitude = altaz[0];
@@ -95,13 +86,15 @@ public class TraitementAstroFiles extends ETraitementAF {
         double azimuth = altaz[1];
         temPoutPutFile[9] = Double.toString(azimuth);
 
-        validate(altitude, azimuth);
+        return validate(altitude, azimuth);
     }
 
-    private void validate(double altitude, double azimuth) {
+    private boolean validate(double altitude, double azimuth) {
         boolean valid = filtre.exe(altitude, azimuth);
+        outPutFile = new String[10];
         if (valid)
             System.arraycopy(temPoutPutFile, 0, outPutFile, 0, temPoutPutFile.length);
+        return valid;
     }
 
 }
