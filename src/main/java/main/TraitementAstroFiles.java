@@ -7,6 +7,7 @@ import com.opencsv.CSVWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class TraitementAstroFiles extends ETraitementAF {
 
@@ -14,15 +15,17 @@ public class TraitementAstroFiles extends ETraitementAF {
     private double lstNow;
     private String[] outPutFile;
     private String[] temPoutPutFile;
-    private String currentName;
-    private String precedName;
-    private boolean comparer = false;
+    private  ArrayList<String[]> LTinData;
+
+//    private String currentName;
+//    private String precedName;
+//    private boolean comparer = false;
     // private ArrayList<String[]> LOutPutFile;
 
     private TraitementAstroFiles() throws IOException {
         outPutFile = new String[10];
         temPoutPutFile = new String[10];
-        //LOutPutFile = new ArrayList<>();
+        LTinData = new ArrayList<>();
 
         double[] utDateNow0 = getDateTime(day_of_month0, month0, year0,
                 hours0, minutes0, seconds0, milliseconds0);
@@ -42,7 +45,7 @@ public class TraitementAstroFiles extends ETraitementAF {
     private void traitement(double[] utDateNow, int pass) throws IOException {
         lstNow = SkyAlgorithms.CalcLST((int) utDateNow[0], (int) utDateNow[1], (int) utDateNow[2], utDateNow[3], longitude, leapSec);
 
-        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + pass + ".csv"), ',');
+       // CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + pass + ".csv"), ',');
         CSVReader reader = new CSVReader(new FileReader(pathFichierResult + nomFichierEntree + ".csv"));
         String[] nextLine;
         reader.readNext();//pass first line
@@ -57,18 +60,19 @@ public class TraitementAstroFiles extends ETraitementAF {
 
         outPutFile[8] = "alt";
         outPutFile[9] = "az";
+        LTinData.add(outPutFile);
+       // writer.writeNext(outPutFile);
 
-        writer.writeNext(outPutFile);
-
-        currentName = "";
-        precedName = "";
+//        currentName = "";
+//        precedName = "";
         while ((nextLine = reader.readNext()) != null) {
             boolean Valid = convertToAzH(nextLine);
             if (Valid)
-                writer.writeNext(outPutFile);
+                LTinData.add(outPutFile);
+                //writer.writeNext(outPutFile);
         }
-        writer.close();
-
+       // writer.close();
+        print();
     }
 
     private boolean convertToAzH(String[] nextLine) {
@@ -76,12 +80,11 @@ public class TraitementAstroFiles extends ETraitementAF {
 
         temPoutPutFile[0] = nextLine[0];//name
 
-
-        boolean doublon=false;
-        if (comparer) doublon = temPoutPutFile[0].equals(currentName);
-
-        comparer = !comparer;
-        currentName = temPoutPutFile[0];
+//        boolean doublon = false;
+//        if (comparer) doublon = temPoutPutFile[0].equals(currentName);
+//
+//        comparer = !comparer;
+//        currentName = temPoutPutFile[0];
 
         // System.out.println(currentName);
 
@@ -105,15 +108,26 @@ public class TraitementAstroFiles extends ETraitementAF {
         double azimuth = altaz[1];
         temPoutPutFile[9] = Double.toString(azimuth);
 
-        return validate(doublon, altitude, azimuth);
+        return validate( altitude, azimuth);
     }
 
-    private boolean validate(boolean doublon, double altitude, double azimuth) {
+    private boolean validate(double altitude, double azimuth) {
         boolean valid = filtre.exe(altitude, azimuth);
         outPutFile = new String[10];
         if (valid)
             System.arraycopy(temPoutPutFile, 0, outPutFile, 0, temPoutPutFile.length);
-        return valid && !doublon;
+        return valid;
     }
 
+    private void print() {
+        StringBuilder line= new StringBuilder();
+        for (String[] tab : LTinData) {
+            for(String s :tab){
+                line.append(s).append(";");
+            }
+            System.out.println(line);
+            line=new StringBuilder();
+        }
+
+    }
 }
