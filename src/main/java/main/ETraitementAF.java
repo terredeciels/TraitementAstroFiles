@@ -1,11 +1,17 @@
 package main;
 
+import java.util.ArrayList;
+
 class ETraitementAF {
+    Filtre filtre;
+    String[] outPutFile;
+    String[] temPoutPutFile;
+
     final double latitude = 49.0;
     final double longitude = 1.887;
-    final String nomFichierEntree = "index";
-    final String nomFichierSortie = "aavso_azalt_";
-    final String pathFichierResult = "D:\\Astronomie\\";
+    //    final String nomFichierEntree = "index";
+//    final String nomFichierSortie = "aavso_azalt_";
+//    final String pathFichierResult = "D:\\Astronomie\\";
     final double day_of_month0 = 22;
     final double day_of_month1 = 22;
     final double month0 = 7;
@@ -21,6 +27,7 @@ class ETraitementAF {
     final int milliseconds0 = 0;
     final int milliseconds1 = 0;
     double leapSec = 0;// ?
+
 
     static double sexToDec(String text) {
         double X = Double.NaN;
@@ -81,4 +88,23 @@ class ETraitementAF {
     }
 
 
+    boolean validate(double altitude, double azimuth) {
+        boolean valid = filtre.exe(altitude, azimuth);
+        outPutFile = new String[10];
+        if (valid)
+            System.arraycopy(temPoutPutFile, 0, outPutFile, 0, temPoutPutFile.length);
+        return valid;
+    }
+
+    void print(ArrayList<String[]> LTinData) {
+        StringBuilder line = new StringBuilder();
+        for (String[] tab : LTinData) {
+            for (String s : tab) {
+                line.append(s).append(";");
+            }
+            System.out.println(line);
+            line = new StringBuilder();
+        }
+
+    }
 }

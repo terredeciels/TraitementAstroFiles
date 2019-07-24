@@ -11,41 +11,85 @@ import java.util.ArrayList;
 
 public class TraitementAstroFiles extends ETraitementAF {
 
-    private final Filtre filtre;
     private double lstNow;
-    private String[] outPutFile;
-    private String[] temPoutPutFile;
-    private  ArrayList<String[]> LTinData;
 
-//    private String currentName;
-//    private String precedName;
-//    private boolean comparer = false;
-    // private ArrayList<String[]> LOutPutFile;
+    public static void main(String[] args) throws IOException {
+        new TraitementAstroFiles().traitement();
+    }
 
-    private TraitementAstroFiles() throws IOException {
+    private void traitement() throws IOException {
+        final String nomFichierEntree = "index";
+        final String pathFichierResult = "D:\\Astronomie\\";
+        ArrayList<String[]> LTinData = indexFileAAVSOtoTabList(pathFichierResult, nomFichierEntree);
+        // print(LTinData);
+        writeToFile(LTinData,pathFichierResult, "aavso_azalt_");
+
+        ArrayList<String[]> LTinDataDoubleDelete = deleteDouble(LTinData);
+       // print(LTinDataDoubleDelete);
+        final String nomFichierSortie = "aavso_azalt_dd_";
+        writeToFile(LTinDataDoubleDelete,pathFichierResult, nomFichierSortie);
+
+    }
+
+    private void writeToFile(ArrayList<String[]> LTinDataDoubleDelete,String pathFichierResult, String nomFichierSortie) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
+        outPutFile[0] = "name";
+        outPutFile[1] = "ra";
+        outPutFile[2] = "dec";
+        outPutFile[3] = "Const";
+        outPutFile[4] = "VarType";
+        outPutFile[5] = "MinMag";
+        outPutFile[6] = "MaxMag";
+        outPutFile[7] = "Period";
+
+        outPutFile[8] = "alt";
+        outPutFile[9] = "az";
+        writer.writeNext(outPutFile);
+
+        for (String[] tab : LTinDataDoubleDelete) {
+            writer.writeNext(tab);
+        }
+        writer.close();
+
+    }
+
+    private ArrayList<String[]> deleteDouble(ArrayList<String[]> LTinData) {
+        ArrayList<String[]> LTinDataDoubleDelete = new ArrayList<>();
+        ;
+        String currentName = "";
+        boolean doublon;
+        boolean currentLine = false;
+
+        for (String[] tab : LTinData) {
+
+            if (currentLine) {
+                doublon = tab[0].equals(currentName);
+                if (!doublon)
+                    // System.out.println(tab[0]);
+                    LTinDataDoubleDelete.add(tab);
+                currentName = tab[0];
+            }
+            currentLine = !currentLine;
+
+        }
+        return LTinDataDoubleDelete;
+    }
+
+    private ArrayList<String[]> indexFileAAVSOtoTabList(String pathFichierResult, String nomFichierEntree) throws IOException {
+        ArrayList<String[]> LTinData;
+
         outPutFile = new String[10];
         temPoutPutFile = new String[10];
         LTinData = new ArrayList<>();
-
-        double[] utDateNow0 = getDateTime(day_of_month0, month0, year0,
+        double[] utDateNow = getDateTime(day_of_month0, month0, year0,
                 hours0, minutes0, seconds0, milliseconds0);
         double[] utDateNow1 = getDateTime(day_of_month1, month1, year1,
                 hours1, minutes1, seconds1, milliseconds1);
-
         filtre = new Filtre(20, 70, 330, 30);
-        traitement(utDateNow0, 0);
+        // traitement(utDateNow0, 0);
         //  traitement(utDateNow1, 1);
-
-    }
-
-    public static void main(String[] args) throws IOException {
-        new TraitementAstroFiles();
-    }
-
-    private void traitement(double[] utDateNow, int pass) throws IOException {
         lstNow = SkyAlgorithms.CalcLST((int) utDateNow[0], (int) utDateNow[1], (int) utDateNow[2], utDateNow[3], longitude, leapSec);
 
-       // CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + pass + ".csv"), ',');
         CSVReader reader = new CSVReader(new FileReader(pathFichierResult + nomFichierEntree + ".csv"));
         String[] nextLine;
         reader.readNext();//pass first line
@@ -61,32 +105,21 @@ public class TraitementAstroFiles extends ETraitementAF {
         outPutFile[8] = "alt";
         outPutFile[9] = "az";
         LTinData.add(outPutFile);
-       // writer.writeNext(outPutFile);
-
-//        currentName = "";
-//        precedName = "";
+        // writer.writeNext(outPutFile);
         while ((nextLine = reader.readNext()) != null) {
             boolean Valid = convertToAzH(nextLine);
             if (Valid)
                 LTinData.add(outPutFile);
-                //writer.writeNext(outPutFile);
+            //writer.writeNext(outPutFile);
         }
-       // writer.close();
-        print();
+        // writer.close();
+
+        return LTinData;
     }
 
     private boolean convertToAzH(String[] nextLine) {
         double ra, dec;
-
         temPoutPutFile[0] = nextLine[0];//name
-
-//        boolean doublon = false;
-//        if (comparer) doublon = temPoutPutFile[0].equals(currentName);
-//
-//        comparer = !comparer;
-//        currentName = temPoutPutFile[0];
-
-        // System.out.println(currentName);
 
         String raS = nextLine[1];
         ra = 15 * ETraitementAF.sexToDec(raS);
@@ -108,26 +141,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         double azimuth = altaz[1];
         temPoutPutFile[9] = Double.toString(azimuth);
 
-        return validate( altitude, azimuth);
+        return validate(altitude, azimuth);
     }
 
-    private boolean validate(double altitude, double azimuth) {
-        boolean valid = filtre.exe(altitude, azimuth);
-        outPutFile = new String[10];
-        if (valid)
-            System.arraycopy(temPoutPutFile, 0, outPutFile, 0, temPoutPutFile.length);
-        return valid;
-    }
-
-    private void print() {
-        StringBuilder line= new StringBuilder();
-        for (String[] tab : LTinData) {
-            for(String s :tab){
-                line.append(s).append(";");
-            }
-            System.out.println(line);
-            line=new StringBuilder();
-        }
-
-    }
 }
