@@ -7,10 +7,6 @@ import com.opencsv.CSVWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class TraitementAstroFiles extends ETraitementAF {
 
@@ -18,12 +14,15 @@ public class TraitementAstroFiles extends ETraitementAF {
     private double lstNow;
     private String[] outPutFile;
     private String[] temPoutPutFile;
-    private ArrayList<String[]> LOutPutFile;
+    private String currentName;
+    private String precedName;
+    private boolean comparer = false;
+    // private ArrayList<String[]> LOutPutFile;
 
     private TraitementAstroFiles() throws IOException {
         outPutFile = new String[10];
         temPoutPutFile = new String[10];
-        LOutPutFile = new ArrayList<>();
+        //LOutPutFile = new ArrayList<>();
 
         double[] utDateNow0 = getDateTime(day_of_month0, month0, year0,
                 hours0, minutes0, seconds0, milliseconds0);
@@ -60,20 +59,31 @@ public class TraitementAstroFiles extends ETraitementAF {
         outPutFile[9] = "az";
 
         writer.writeNext(outPutFile);
+
+        currentName = "";
+        precedName = "";
         while ((nextLine = reader.readNext()) != null) {
-            boolean valid = convertToAzH(nextLine);
-            if (valid)
-                LOutPutFile.add(outPutFile);
-            writer.writeNext(outPutFile);
+            boolean Valid = convertToAzH(nextLine);
+            if (Valid)
+                writer.writeNext(outPutFile);
         }
         writer.close();
-        suppDoublons();
+
     }
 
     private boolean convertToAzH(String[] nextLine) {
         double ra, dec;
 
         temPoutPutFile[0] = nextLine[0];//name
+
+
+        boolean doublon=false;
+        if (comparer) doublon = temPoutPutFile[0].equals(currentName);
+
+        comparer = !comparer;
+        currentName = temPoutPutFile[0];
+
+        // System.out.println(currentName);
 
         String raS = nextLine[1];
         ra = 15 * ETraitementAF.sexToDec(raS);
@@ -95,25 +105,15 @@ public class TraitementAstroFiles extends ETraitementAF {
         double azimuth = altaz[1];
         temPoutPutFile[9] = Double.toString(azimuth);
 
-        return validate(altitude, azimuth);
+        return validate(doublon, altitude, azimuth);
     }
 
-    private boolean validate(double altitude, double azimuth) {
+    private boolean validate(boolean doublon, double altitude, double azimuth) {
         boolean valid = filtre.exe(altitude, azimuth);
         outPutFile = new String[10];
         if (valid)
             System.arraycopy(temPoutPutFile, 0, outPutFile, 0, temPoutPutFile.length);
-        return valid;
+        return valid && !doublon;
     }
 
-    private void suppDoublons() throws IOException {
-        Set<String[]> set = new HashSet<>(LOutPutFile);
-        List<String[]> LOutPutFileSansDoublon = new ArrayList<>(set);
-        int pass = 0;
-        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + pass + "_sd" + ".csv"), ',');
-
-        for (String[] e : LOutPutFileSansDoublon) {
-            writer.writeNext(e);
-        }
-    }
 }
