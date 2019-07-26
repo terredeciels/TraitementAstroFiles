@@ -22,16 +22,41 @@ public class TraitementAstroFiles extends ETraitementAF {
         final String pathFichierResult = "D:\\Astronomie\\";
         ArrayList<String[]> LTinData = indexFileAAVSOtoTabList(pathFichierResult, nomFichierEntree);
         // print(LTinData);
-        writeToFile(LTinData,pathFichierResult, "aavso_azalt_");
+        writeToFile(LTinData, pathFichierResult, "aavso_azalt_");
 
         ArrayList<String[]> LTinDataDoubleDelete = deleteDouble(LTinData);
-       // print(LTinDataDoubleDelete);
-        final String nomFichierSortie = "aavso_azalt_dd_";
-        writeToFile(LTinDataDoubleDelete,pathFichierResult, nomFichierSortie);
+        // print(LTinDataDoubleDelete);
+        String nomFichierSortie = "aavso_azalt_dd_";
+        writeToFile(LTinDataDoubleDelete, pathFichierResult, nomFichierSortie);
+        ArrayList<String> LTinDataDoubleDeleteNames = deleteDoubleNames(LTinDataDoubleDelete);
+        nomFichierSortie = "aavso_azalt_dd_names_";
+        writeNamesToFile(LTinDataDoubleDeleteNames, pathFichierResult, nomFichierSortie);
 
     }
 
-    private void writeToFile(ArrayList<String[]> LTinDataDoubleDelete,String pathFichierResult, String nomFichierSortie) throws IOException {
+    private void writeNamesToFile(ArrayList<String> LTinDataDoubleDeleteNames, String pathFichierResult, String nomFichierSortie) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
+//        outPutFile[0] = "name";
+//        outPutFile[1] = "ra";
+//        outPutFile[2] = "dec";
+//        outPutFile[3] = "Const";
+//        outPutFile[4] = "VarType";
+//        outPutFile[5] = "MinMag";
+//        outPutFile[6] = "MaxMag";
+//        outPutFile[7] = "Period";
+//
+//        outPutFile[8] = "alt";
+//        outPutFile[9] = "az";
+//        writer.writeNext(outPutFile);
+
+        for (String s : LTinDataDoubleDeleteNames) {
+            writer.writeNext(new String[]{s});
+        }
+        writer.close();
+
+    }
+
+    private void writeToFile(ArrayList<String[]> LTinDataDoubleDelete, String pathFichierResult, String nomFichierSortie) throws IOException {
         CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
         outPutFile[0] = "name";
         outPutFile[1] = "ra";
@@ -53,9 +78,17 @@ public class TraitementAstroFiles extends ETraitementAF {
 
     }
 
+    private ArrayList<String> deleteDoubleNames(ArrayList<String[]> LTinData) {
+        ArrayList<String> LTinDataDoubleDeleteNames = new ArrayList<>();
+        for (String[] tab : LTinData) {
+            LTinDataDoubleDeleteNames.add(tab[0]);
+        }
+
+        return LTinDataDoubleDeleteNames;
+    }
+
     private ArrayList<String[]> deleteDouble(ArrayList<String[]> LTinData) {
         ArrayList<String[]> LTinDataDoubleDelete = new ArrayList<>();
-        ;
         String currentName = "";
         boolean doublon;
         boolean currentLine = false;
