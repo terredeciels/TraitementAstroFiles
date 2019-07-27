@@ -31,11 +31,53 @@ public class TraitementAstroFiles extends ETraitementAF {
         ArrayList<String> LTinDataDoubleDeleteNames = deleteDoubleNames(LTinDataDoubleDelete);
         nomFichierSortie = "aavso_azalt_dd_names_";
         writeNamesToFile(LTinDataDoubleDeleteNames, pathFichierResult, nomFichierSortie);
+        printMagnitudesMax(LTinData);
 
     }
 
+    private void printMagnitudesMax(ArrayList<String[]> LTinData) {
+        for (String[] tab : LTinData) {
+            String smax = tab[5].split(" ")[0];
+            String smin = tab[6].split(" ")[0];
+            String speriod = tab[7].split(" ")[0];
+
+            double dmax, dmin, dperiod;
+            String Dmax, Dmin, Dperiod;
+
+            try {
+                dmax = Double.parseDouble(smax);
+                Dmax = String.valueOf(dmax);
+            } catch (NumberFormatException e) {
+                Dmax = "?";
+            }
+            try {
+                dmin = Double.parseDouble(smin);
+                Dmin = String.valueOf(dmin);
+            } catch (NumberFormatException e) {
+                Dmin = "?";
+            }
+            try {
+                dperiod = Double.parseDouble(speriod);
+                Dperiod = String.valueOf(dperiod);
+            } catch (NumberFormatException e) {
+                Dperiod = "?";
+            }
+
+            System.out.println(Dmax + " " + Dmin + " " + Dperiod);
+        }
+    }
+
     private void writeNamesToFile(ArrayList<String> LTinDataDoubleDeleteNames, String pathFichierResult, String nomFichierSortie) throws IOException {
-        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
+        FileWriter writer = new FileWriter(pathFichierResult + nomFichierSortie + ".txt");
+        writer.write("AAVSO Target");
+        writer.write("\r\n");
+        for (String s : LTinDataDoubleDeleteNames) {
+            writer.write(s);
+            writer.write("\r\n");
+        }
+        writer.close();
+
+        // CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
 //        outPutFile[0] = "name";
 //        outPutFile[1] = "ra";
 //        outPutFile[2] = "dec";
@@ -49,10 +91,12 @@ public class TraitementAstroFiles extends ETraitementAF {
 //        outPutFile[9] = "az";
 //        writer.writeNext(outPutFile);
 
-        for (String s : LTinDataDoubleDeleteNames) {
-            writer.writeNext(new String[]{s});
-        }
-        writer.close();
+//        for (String s : LTinDataDoubleDeleteNames) {
+//            writer.writeNext(new String[]{s});
+//
+//            System.out.println(s);
+//        }
+//        writer.close();
 
     }
 
