@@ -6,10 +6,7 @@ public class Test {
 
     public static void main(String[] args) {
         String s;
-       // s.split();
-
-
-
+        // s.split();
 
 
 //        double res = ETraitementAF.sexToDec("01h 45m 03s");

@@ -20,17 +20,18 @@ public class TraitementAstroFiles extends ETraitementAF {
     private void traitement() throws IOException {
 
         ArrayList<String[]> LTnomFichierEntree = fileToTabList(path, nomFichierEntree);
-        // print(LTnomFichierEntree);
+        print(LTnomFichierEntree);
+        System.out.println();
         writeToFile(LTnomFichierEntree, path, nomFichierSortie);
 
         ArrayList<String[]> LTnomFichierEntreeSansDouble = supprDoublons(LTnomFichierEntree);
-        // print(LTnomFichierEntreeSansDouble);
+         print(LTnomFichierEntreeSansDouble);
 
         writeToFile(LTnomFichierEntreeSansDouble, path, nomFichierSortieSansDoublon);
-        ArrayList<String> LTLTnomFichierEntreeSansDouble = supprDoublonNoms(LTnomFichierEntreeSansDouble);
+        ArrayList<String> LTLTnomFichierEntreeSansDouble = supprDoublon_Noms(LTnomFichierEntreeSansDouble);
 
         writeNamesToFile(LTLTnomFichierEntreeSansDouble, path, nomFichierSortieSansDoublonNoms);
-        printMagMaxMinPeriod(LTnomFichierEntree);
+        //printMagMaxMinPeriod(LTnomFichierEntree);
 
     }
 
@@ -99,7 +100,7 @@ public class TraitementAstroFiles extends ETraitementAF {
 
     }
 
-    private ArrayList<String> supprDoublonNoms(ArrayList<String[]> LT) {
+    private ArrayList<String> supprDoublon_Noms(ArrayList<String[]> LT) {
         ArrayList<String> LTsansDoubleNoms = new ArrayList<>();
         for (String[] tab : LT) {
             LTsansDoubleNoms.add(tab[0]);
@@ -119,7 +120,7 @@ public class TraitementAstroFiles extends ETraitementAF {
             if (currentLine) {
                 doublon = tab[0].equals(currentName);
                 if (!doublon)
-                    // System.out.println(tab[0]);
+                   // System.out.println(tab[0]);
                     LTinDataDoubleDelete.add(tab);
                 currentName = tab[0];
             }
@@ -141,8 +142,8 @@ public class TraitementAstroFiles extends ETraitementAF {
                 hours1, minutes1, seconds1, milliseconds1);
 
         filtreAltAz = new Filtre(20, 70, 330, 30);
-        filtrePeriod = new Filtre(2,30);// 2 jours à 30 jours
-        filtreMag =new Filtre(12);
+        filtrePeriod = new Filtre(2, 30);// 2 jours à 30 jours
+        filtreMag = new Filtre(12);
 
         // traitement(utDateNow0, 0);
         //  traitement(utDateNow1, 1);
@@ -151,18 +152,18 @@ public class TraitementAstroFiles extends ETraitementAF {
         CSVReader reader = new CSVReader(new FileReader(path + nomFichierEntree + ".csv"));
         String[] nextLine;
         reader.readNext();//pass first line
-        outPutFile[0] = "name";
-        outPutFile[1] = "ra";
-        outPutFile[2] = "dec";
-        outPutFile[3] = "Const";
-        outPutFile[4] = "VarType";
-        outPutFile[5] = "MinMag";
-        outPutFile[6] = "MaxMag";
-        outPutFile[7] = "Period";
-
-        outPutFile[8] = "alt";
-        outPutFile[9] = "az";
-        LTinData.add(outPutFile);
+//        outPutFile[0] = "name";
+//        outPutFile[1] = "ra";
+//        outPutFile[2] = "dec";
+//        outPutFile[3] = "Const";
+//        outPutFile[4] = "VarType";
+//        outPutFile[5] = "MinMag";
+//        outPutFile[6] = "MaxMag";
+//        outPutFile[7] = "Period";
+//
+//        outPutFile[8] = "alt";
+//        outPutFile[9] = "az";
+//        LTinData.add(outPutFile);
         // writer.writeNext(outPutFile);
         while ((nextLine = reader.readNext()) != null) {
             boolean Valid = convertToAzH(nextLine);
@@ -193,9 +194,9 @@ public class TraitementAstroFiles extends ETraitementAF {
 //        temPoutPutFile[6] = nextLine[6];
 //        temPoutPutFile[7] = nextLine[7];
 
-        String smin =nextLine[5].split(" ")[0];//MaxMag
-        String smax =nextLine[6].split(" ")[0];//MinMag
-        String speriod =nextLine[7].split(" ")[0];//Period
+        String smin = nextLine[5].split(" ")[0];//MaxMag
+        String smax = nextLine[6].split(" ")[0];//MinMag
+        String speriod = nextLine[7].split(" ")[0];//Period
 
         double dmax, dmin, dperiod;
         String Dmax, Dmin, Dperiod;
@@ -229,7 +230,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         double azimuth = altaz[1];
         temPoutPutFile[9] = Double.toString(azimuth);
 
-        return validate(altitude, azimuth,Dmin,Dperiod);
+        return validate(altitude, azimuth, Dmin, Dperiod);
     }
 
 }

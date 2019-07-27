@@ -3,18 +3,11 @@ package main;
 import java.util.ArrayList;
 
 class ETraitementAF {
-    Filtre filtreAltAz;
-     Filtre filtrePeriod;
-     Filtre filtreMag;;
-    String[] outPutFile;
-    String[] temPoutPutFile;
-
     final String nomFichierEntree = "index";
-    final String nomFichierSortie = "aavso_azalt_";
-    final String nomFichierSortieSansDoublon = "aavso_azalt_dd_";
-    final String nomFichierSortieSansDoublonNoms = "aavso_azalt_dd_names_";
+    final String nomFichierSortie = "aavso_filtre_azalt_mag_period";
+    final String nomFichierSortieSansDoublon = "aavso_filtre_azalt_mag_period_sdoublon";
+    final String nomFichierSortieSansDoublonNoms = "aavso_filtre_azalt_mag_period_sdoublon_noms";
     final String path = "D:\\Astronomie\\";
-
     final double latitude = 49.0;
     final double longitude = 1.887;
     final double day_of_month0 = 22;
@@ -31,6 +24,11 @@ class ETraitementAF {
     final int seconds1 = 0;
     final int milliseconds0 = 0;
     final int milliseconds1 = 0;
+    Filtre filtreAltAz;
+    Filtre filtrePeriod;
+    Filtre filtreMag;
+    String[] outPutFile;
+    String[] temPoutPutFile;
     double leapSec = 0;// ?
 
 
@@ -93,7 +91,7 @@ class ETraitementAF {
     }
 
 
-    boolean validate(double altitude, double azimuth, String minmag,String period) {
+    boolean validate(double altitude, double azimuth, String minmag, String period) {
         boolean valid = filtreAltAz.exe(altitude, azimuth);
         valid = valid && filtreMag.exeMag(minmag);
         valid = valid && filtrePeriod.exeP(period);

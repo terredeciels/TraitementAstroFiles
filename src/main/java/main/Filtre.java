@@ -22,8 +22,8 @@ class Filtre {
 
     }
 
-    Filtre (double min){
-        this.min=min;
+    Filtre(double min) {
+        this.min = min;
 
     }
 
@@ -36,19 +36,20 @@ class Filtre {
 
     boolean exeMag(String val) {
         try {
-           double dmin = Double.parseDouble(val);
-          return dmin < min;
+            double dmin = Double.parseDouble(val);
+            return dmin < min;
         } catch (NumberFormatException e) {
             return false;
         }
 
     }
+
     boolean exeP(String val) {
         try {
-          double  dperiod = Double.parseDouble(val);
-            return (dperiod>min && dperiod <max);
+            double dperiod = Double.parseDouble(val);
+            return (dperiod > min && dperiod < max);
         } catch (NumberFormatException e) {
-           return false;
+            return false;
         }
 
     }
