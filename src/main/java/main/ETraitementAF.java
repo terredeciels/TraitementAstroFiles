@@ -3,7 +3,9 @@ package main;
 import java.util.ArrayList;
 
 class ETraitementAF {
-    Filtre filtre;
+    Filtre filtreAltAz;
+     Filtre filtrePeriod;
+     Filtre filtreMag;;
     String[] outPutFile;
     String[] temPoutPutFile;
 
@@ -91,8 +93,10 @@ class ETraitementAF {
     }
 
 
-    boolean validate(double altitude, double azimuth) {
-        boolean valid = filtre.exe(altitude, azimuth);
+    boolean validate(double altitude, double azimuth, String minmag,String period) {
+        boolean valid = filtreAltAz.exe(altitude, azimuth);
+        valid = valid && filtreMag.exeMag(minmag);
+        valid = valid && filtrePeriod.exeP(period);
         outPutFile = new String[10];
         if (valid)
             System.arraycopy(temPoutPutFile, 0, outPutFile, 0, temPoutPutFile.length);

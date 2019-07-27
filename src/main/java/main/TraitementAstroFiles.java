@@ -36,8 +36,8 @@ public class TraitementAstroFiles extends ETraitementAF {
 
     private void printMagMaxMinPeriod(ArrayList<String[]> LTinData) {
         for (String[] tab : LTinData) {
-            String smax = tab[5].split(" ")[0];
-            String smin = tab[6].split(" ")[0];
+            String smin = tab[5].split(" ")[0];
+            String smax = tab[6].split(" ")[0];
             String speriod = tab[7].split(" ")[0];
 
             double dmax, dmin, dperiod;
@@ -62,7 +62,7 @@ public class TraitementAstroFiles extends ETraitementAF {
                 Dperiod = "?";
             }
 
-            System.out.println(Dmax + " " + Dmin + " " + Dperiod);
+            System.out.println(Dmin + " " + Dmax + " " + Dperiod);
         }
     }
 
@@ -139,7 +139,11 @@ public class TraitementAstroFiles extends ETraitementAF {
                 hours0, minutes0, seconds0, milliseconds0);
         double[] utDateNow1 = getDateTime(day_of_month1, month1, year1,
                 hours1, minutes1, seconds1, milliseconds1);
-        filtre = new Filtre(20, 70, 330, 30);
+
+        filtreAltAz = new Filtre(20, 70, 330, 30);
+        filtrePeriod = new Filtre(2,30);// 2 jours à 30 jours
+        filtreMag =new Filtre(12);
+
         // traitement(utDateNow0, 0);
         //  traitement(utDateNow1, 1);
         lstNow = SkyAlgorithms.CalcLST((int) utDateNow[0], (int) utDateNow[1], (int) utDateNow[2], utDateNow[3], longitude, leapSec);
@@ -189,8 +193,8 @@ public class TraitementAstroFiles extends ETraitementAF {
 //        temPoutPutFile[6] = nextLine[6];
 //        temPoutPutFile[7] = nextLine[7];
 
-        String smax =nextLine[5].split(" ")[0];//MaxMag
-        String smin =nextLine[6].split(" ")[0];//MinMag
+        String smin =nextLine[5].split(" ")[0];//MaxMag
+        String smax =nextLine[6].split(" ")[0];//MinMag
         String speriod =nextLine[7].split(" ")[0];//Period
 
         double dmax, dmin, dperiod;
@@ -214,10 +218,9 @@ public class TraitementAstroFiles extends ETraitementAF {
         } catch (NumberFormatException e) {
             Dperiod = "?";
         }
-        temPoutPutFile[5] = Dmax;//MaxMag
-        temPoutPutFile[6] = Dmin;//MinMag
+        temPoutPutFile[5] = Dmin;//MaxMag
+        temPoutPutFile[6] = Dmax;//MinMag
         temPoutPutFile[7] = Dperiod;//Period
-
 
         double ha = lstNow - ra;
         double[] altaz = SkyAlgorithms.EquatorialToHorizontal(ha, dec, latitude);
@@ -226,7 +229,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         double azimuth = altaz[1];
         temPoutPutFile[9] = Double.toString(azimuth);
 
-        return validate(altitude, azimuth);
+        return validate(altitude, azimuth,Dmin,Dperiod);
     }
 
 }
