@@ -7,11 +7,14 @@ class ETraitementAF {
     String[] outPutFile;
     String[] temPoutPutFile;
 
+    final String nomFichierEntree = "index";
+    final String nomFichierSortie = "aavso_azalt_";
+    final String nomFichierSortieSansDoublon = "aavso_azalt_dd_";
+    final String nomFichierSortieSansDoublonNoms = "aavso_azalt_dd_names_";
+    final String path = "D:\\Astronomie\\";
+
     final double latitude = 49.0;
     final double longitude = 1.887;
-    //    final String nomFichierEntree = "index";
-//    final String nomFichierSortie = "aavso_azalt_";
-//    final String pathFichierResult = "D:\\Astronomie\\";
     final double day_of_month0 = 22;
     final double day_of_month1 = 22;
     final double month0 = 7;

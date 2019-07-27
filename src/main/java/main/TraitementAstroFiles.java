@@ -18,24 +18,23 @@ public class TraitementAstroFiles extends ETraitementAF {
     }
 
     private void traitement() throws IOException {
-        final String nomFichierEntree = "index";
-        final String pathFichierResult = "D:\\Astronomie\\";
-        ArrayList<String[]> LTinData = indexFileAAVSOtoTabList(pathFichierResult, nomFichierEntree);
-        // print(LTinData);
-        writeToFile(LTinData, pathFichierResult, "aavso_azalt_");
 
-        ArrayList<String[]> LTinDataDoubleDelete = deleteDouble(LTinData);
-        // print(LTinDataDoubleDelete);
-        String nomFichierSortie = "aavso_azalt_dd_";
-        writeToFile(LTinDataDoubleDelete, pathFichierResult, nomFichierSortie);
-        ArrayList<String> LTinDataDoubleDeleteNames = deleteDoubleNames(LTinDataDoubleDelete);
-        nomFichierSortie = "aavso_azalt_dd_names_";
-        writeNamesToFile(LTinDataDoubleDeleteNames, pathFichierResult, nomFichierSortie);
-        printMagnitudesMax(LTinData);
+        ArrayList<String[]> LTnomFichierEntree = fileToTabList(path, nomFichierEntree);
+        // print(LTnomFichierEntree);
+        writeToFile(LTnomFichierEntree, path, nomFichierSortie);
+
+        ArrayList<String[]> LTnomFichierEntreeSansDouble = supprDoublons(LTnomFichierEntree);
+        // print(LTnomFichierEntreeSansDouble);
+
+        writeToFile(LTnomFichierEntreeSansDouble, path, nomFichierSortieSansDoublon);
+        ArrayList<String> LTLTnomFichierEntreeSansDouble = supprDoublonNoms(LTnomFichierEntreeSansDouble);
+
+        writeNamesToFile(LTLTnomFichierEntreeSansDouble, path, nomFichierSortieSansDoublonNoms);
+        printMagMaxMinPeriod(LTnomFichierEntree);
 
     }
 
-    private void printMagnitudesMax(ArrayList<String[]> LTinData) {
+    private void printMagMaxMinPeriod(ArrayList<String[]> LTinData) {
         for (String[] tab : LTinData) {
             String smax = tab[5].split(" ")[0];
             String smin = tab[6].split(" ")[0];
@@ -67,41 +66,19 @@ public class TraitementAstroFiles extends ETraitementAF {
         }
     }
 
-    private void writeNamesToFile(ArrayList<String> LTinDataDoubleDeleteNames, String pathFichierResult, String nomFichierSortie) throws IOException {
-        FileWriter writer = new FileWriter(pathFichierResult + nomFichierSortie + ".txt");
+    private void writeNamesToFile(ArrayList<String> LT, String path, String nomFichierSortie) throws IOException {
+        FileWriter writer = new FileWriter(path + nomFichierSortie + ".txt");
         writer.write("AAVSO Target");
         writer.write("\r\n");
-        for (String s : LTinDataDoubleDeleteNames) {
+        for (String s : LT) {
             writer.write(s);
             writer.write("\r\n");
         }
         writer.close();
-
-        // CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
-//        outPutFile[0] = "name";
-//        outPutFile[1] = "ra";
-//        outPutFile[2] = "dec";
-//        outPutFile[3] = "Const";
-//        outPutFile[4] = "VarType";
-//        outPutFile[5] = "MinMag";
-//        outPutFile[6] = "MaxMag";
-//        outPutFile[7] = "Period";
-//
-//        outPutFile[8] = "alt";
-//        outPutFile[9] = "az";
-//        writer.writeNext(outPutFile);
-
-//        for (String s : LTinDataDoubleDeleteNames) {
-//            writer.writeNext(new String[]{s});
-//
-//            System.out.println(s);
-//        }
-//        writer.close();
-
     }
 
-    private void writeToFile(ArrayList<String[]> LTinDataDoubleDelete, String pathFichierResult, String nomFichierSortie) throws IOException {
-        CSVWriter writer = new CSVWriter(new FileWriter(pathFichierResult + nomFichierSortie + ".csv"), ',');
+    private void writeToFile(ArrayList<String[]> LT, String path, String nomFichierSortie) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter(path + nomFichierSortie + ".csv"), ',');
         outPutFile[0] = "name";
         outPutFile[1] = "ra";
         outPutFile[2] = "dec";
@@ -115,23 +92,23 @@ public class TraitementAstroFiles extends ETraitementAF {
         outPutFile[9] = "az";
         writer.writeNext(outPutFile);
 
-        for (String[] tab : LTinDataDoubleDelete) {
+        for (String[] tab : LT) {
             writer.writeNext(tab);
         }
         writer.close();
 
     }
 
-    private ArrayList<String> deleteDoubleNames(ArrayList<String[]> LTinData) {
-        ArrayList<String> LTinDataDoubleDeleteNames = new ArrayList<>();
-        for (String[] tab : LTinData) {
-            LTinDataDoubleDeleteNames.add(tab[0]);
+    private ArrayList<String> supprDoublonNoms(ArrayList<String[]> LT) {
+        ArrayList<String> LTsansDoubleNoms = new ArrayList<>();
+        for (String[] tab : LT) {
+            LTsansDoubleNoms.add(tab[0]);
         }
 
-        return LTinDataDoubleDeleteNames;
+        return LTsansDoubleNoms;
     }
 
-    private ArrayList<String[]> deleteDouble(ArrayList<String[]> LTinData) {
+    private ArrayList<String[]> supprDoublons(ArrayList<String[]> LTinData) {
         ArrayList<String[]> LTinDataDoubleDelete = new ArrayList<>();
         String currentName = "";
         boolean doublon;
@@ -152,7 +129,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         return LTinDataDoubleDelete;
     }
 
-    private ArrayList<String[]> indexFileAAVSOtoTabList(String pathFichierResult, String nomFichierEntree) throws IOException {
+    private ArrayList<String[]> fileToTabList(String path, String nomFichierEntree) throws IOException {
         ArrayList<String[]> LTinData;
 
         outPutFile = new String[10];
@@ -167,7 +144,7 @@ public class TraitementAstroFiles extends ETraitementAF {
         //  traitement(utDateNow1, 1);
         lstNow = SkyAlgorithms.CalcLST((int) utDateNow[0], (int) utDateNow[1], (int) utDateNow[2], utDateNow[3], longitude, leapSec);
 
-        CSVReader reader = new CSVReader(new FileReader(pathFichierResult + nomFichierEntree + ".csv"));
+        CSVReader reader = new CSVReader(new FileReader(path + nomFichierEntree + ".csv"));
         String[] nextLine;
         reader.readNext();//pass first line
         outPutFile[0] = "name";
@@ -207,9 +184,40 @@ public class TraitementAstroFiles extends ETraitementAF {
 
         temPoutPutFile[3] = nextLine[3];//Const
         temPoutPutFile[4] = nextLine[4];//VarType
-        temPoutPutFile[5] = nextLine[5];//MinMag
-        temPoutPutFile[6] = nextLine[6];//MaxMag
-        temPoutPutFile[7] = nextLine[7];//Period
+
+//        temPoutPutFile[5] = nextLine[5];
+//        temPoutPutFile[6] = nextLine[6];
+//        temPoutPutFile[7] = nextLine[7];
+
+        String smax =nextLine[5].split(" ")[0];//MaxMag
+        String smin =nextLine[6].split(" ")[0];//MinMag
+        String speriod =nextLine[7].split(" ")[0];//Period
+
+        double dmax, dmin, dperiod;
+        String Dmax, Dmin, Dperiod;
+
+        try {
+            dmax = Double.parseDouble(smax);
+            Dmax = String.valueOf(dmax);
+        } catch (NumberFormatException e) {
+            Dmax = "?";
+        }
+        try {
+            dmin = Double.parseDouble(smin);
+            Dmin = String.valueOf(dmin);
+        } catch (NumberFormatException e) {
+            Dmin = "?";
+        }
+        try {
+            dperiod = Double.parseDouble(speriod);
+            Dperiod = String.valueOf(dperiod);
+        } catch (NumberFormatException e) {
+            Dperiod = "?";
+        }
+        temPoutPutFile[5] = Dmax;//MaxMag
+        temPoutPutFile[6] = Dmin;//MinMag
+        temPoutPutFile[7] = Dperiod;//Period
+
 
         double ha = lstNow - ra;
         double[] altaz = SkyAlgorithms.EquatorialToHorizontal(ha, dec, latitude);
